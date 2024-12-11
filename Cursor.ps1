@@ -1,3 +1,11 @@
+# Request administrative privileges
+if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Host "Requesting administrative privileges..." -ForegroundColor Yellow
+    $arguments = "& '" + $myinvocation.mycommand.definition + "'"
+    Start-Process powershell -Verb runAs -ArgumentList $arguments
+    Exit
+}
+
 # Generate new UUIDs and convert them to lowercase
 Write-Host "Step 1: Generating new identifiers..." -ForegroundColor Green
 $new_machine_id = [guid]::NewGuid().ToString().ToLower()
