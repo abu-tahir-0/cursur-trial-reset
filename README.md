@@ -1,4 +1,4 @@
-# Cursor Device Fingerprint Reset
+# Cursor Too many free trial accounts used on this machine
 
 Too many free trial accounts used on this machine. Please upgrade to pro fix.
 
@@ -19,11 +19,9 @@ This solution should only be used in the following legitimate scenarios:
 5. When hardware changes cause incorrect device identification
 6. For development/testing environments with proper licensing
 
-**Note:** This is not intended to bypass licensing. Please ensure you have a valid license or are within the official trial period. For permanent solutions, we recommend:
+**Note:** This is not intended to bypass licensing. Please ensure you have a valid license or are within the official trial period. For permanent solutions, i recommend:
 - Purchasing a Cursor Pro license
 - Contacting official Cursor support
-- Clearing browser data and cache first
-- Verifying your account status in Cursor settings
 
 ## Instructions
 
@@ -31,14 +29,15 @@ This solution should only be used in the following legitimate scenarios:
    - Press `Win + X`
    - Select "Windows Terminal (Admin)" from the menu
 
-2. Navigate to the Desktop:
+2. Clone and navigate to the repository:
    ```powershell
-   cd ~/Desktop
+   git clone https://github.com/abu-tahir-0/cursur-trial-reset.git
+   cd cursur-trial-reset
    ```
 
 3. Execute the reset script:
    ```powershell
-   .\Cursor.ps1.ps1
+   .\Cursor.ps1
    ```
 
 ## Note
