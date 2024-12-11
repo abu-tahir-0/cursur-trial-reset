@@ -1,41 +1,49 @@
-# Request administrative privileges
-if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    Write-Host "Requesting administrative privileges..." -ForegroundColor Yellow
-    $arguments = "& '" + $myinvocation.mycommand.definition + "'"
-    Start-Process powershell -Verb runAs -ArgumentList $arguments
+# Ensure script is running with administrative privileges
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    # Relaunch the script with admin rights
+    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     Exit
 }
 
-# Generate new UUIDs and convert them to lowercase
-Write-Host "Step 1: Generating new identifiers..." -ForegroundColor Green
-$new_machine_id = [guid]::NewGuid().ToString().ToLower()
-$new_dev_device_id = [guid]::NewGuid().ToString().ToLower()
-$new_mac_machine_id = -join ((1..32) | ForEach-Object { "{0:x}" -f (Get-Random -Max 16) })
-Write-Host "Generated new IDs successfully" -ForegroundColor Gray
+# Define the path to storage.json
+$storagePath = Join-Path $env:APPDATA "Cursor\User\globalStorage\storage.json"
 
-# Define file paths
-Write-Host "`nStep 2: Setting up file paths..." -ForegroundColor Green
-$machine_id_path = "$env:APPDATA\Cursor\machineid"
-$storage_json_path = "$env:APPDATA\Cursor\User\globalStorage\storage.json"
-Write-Host "Path Found"
+# Check if the storage file exists
+if (-not (Test-Path $storagePath)) {
+    Write-Host "Error: storage.json not found at $storagePath" -ForegroundColor Red
+    Read-Host "Press Enter to exit"
+    Exit
+}
 
-# Backup original files
-Write-Host "`nStep 3: Creating backups..." -ForegroundColor Green
-Copy-Item $machine_id_path "$machine_id_path.backup" -ErrorAction SilentlyContinue
-Copy-Item $storage_json_path "$storage_json_path.backup" -ErrorAction SilentlyContinue
-Write-Host "Backup files created (if original files existed)" -ForegroundColor Gray
+# Generate random values
+$uuid = [guid]::NewGuid().ToString()
+$hex1 = -join ((48..57) + (97..102) | Get-Random -Count 64 | ForEach-Object {[char]$_})
+$hex2 = -join ((48..57) + (97..102) | Get-Random -Count 64 | ForEach-Object {[char]$_})
 
-# Update the machineid file
-Write-Host "`nStep 4: Updating machine ID..." -ForegroundColor Green
-$new_machine_id | Out-File -FilePath $machine_id_path -Encoding UTF8 -NoNewline
-Write-Host "Machine ID updated successfully" -ForegroundColor Gray
+# Remove read-only attribute if it exists
+if ((Get-ItemProperty $storagePath).IsReadOnly) {
+    Set-ItemProperty $storagePath -Name IsReadOnly -Value $false
+}
 
-# Read and update the storage.json file
-Write-Host "`nStep 5: Updating storage.json..." -ForegroundColor Green
-$content = Get-Content $storage_json_path -Raw | ConvertFrom-Json
-$content.'telemetry.devDeviceId' = $new_dev_device_id
-$content.'telemetry.macMachineId' = $new_mac_machine_id
-$content | ConvertTo-Json -Depth 100 | Out-File $storage_json_path -Encoding UTF8
-Write-Host "Storage.json updated successfully" -ForegroundColor Gray
+# Create new JSON content
+$jsonContent = @{
+    'telemetry.macMachineId' = $hex1
+    'telemetry.machineId' = $hex2
+    'telemetry.devDeviceId' = $uuid
+} | ConvertTo-Json
 
-Write-Host "`nAll steps completed successfully!" -ForegroundColor Green
+# Write the JSON content to file
+$jsonContent | Set-Content -Path $storagePath
+
+# Set read-only attribute
+Set-ItemProperty $storagePath -Name IsReadOnly -Value $true
+
+# Display the results
+Write-Host "`nDone! File has been updated with new random values.`n" -ForegroundColor Green
+Write-Host "New values:"
+Write-Host "macMachineId: $hex1" -ForegroundColor Cyan
+Write-Host "machineId: $hex2" -ForegroundColor Cyan
+Write-Host "devDeviceId: $uuid" -ForegroundColor Cyan
+Write-Host ""
+
+Read-Host "Press Enter to exit" 
