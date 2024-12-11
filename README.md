@@ -39,13 +39,3 @@ This solution should only be used in the following legitimate scenarios:
    ```powershell
    .\Cursor.ps1
    ```
-
-## Note
-
-- Make sure you have the necessary permissions to run PowerShell scripts
-- The script must be located on your Desktop for these instructions to work
-- If you encounter any security warnings, you may need to adjust your PowerShell execution policy
-
-## Security Notice
-
-Always exercise caution when running scripts with administrative privileges. Only run scripts from trusted sources.
