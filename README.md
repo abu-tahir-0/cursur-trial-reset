@@ -1,6 +1,6 @@
 # Cursor Too many free trial accounts used on this machine
 
-![Visitor Count](https://profile-counter.glitch.me/abu-tahir-0-cursur-trial-reset/count.svg)
+![Visitor Count](https://komarev.com/ghpvc/?username=abu-tahir-0&repo=cursur-trial-reset&color=blue&style=flat-square&label=views)
 
 Too many free trial accounts used on this machine. Please upgrade to pro fix.
 
