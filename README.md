@@ -39,3 +39,5 @@ This solution should only be used in the following legitimate scenarios:
    ```powershell
    .\Cursor.ps1
    ```
+ <a href='http://www.freevisitorcounters.com'>freevisitorcounters's Website</a> <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=9d3c920870859882b89ed42f010fe177144500c6'></script>
+<script type="text/javascript" src="https://www.freevisitorcounters.com/en/home/counter/1369558/t/5"></script>
